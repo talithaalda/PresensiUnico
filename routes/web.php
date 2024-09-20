@@ -10,3 +10,4 @@ use Illuminate\Support\Facades\Route;
 //     // ...
 // })->middleware(AdminMiddleware::class);
 Route::post('/presensi', [PresensiController::class, 'store'])->name('presensi.store');
+Route::put('/presensi/{id}', [PresensiController::class, 'update'])->name('presensi.update');

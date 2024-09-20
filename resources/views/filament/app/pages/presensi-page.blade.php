@@ -1,44 +1,74 @@
 <link rel="stylesheet" href="{{ asset('css/index.css') }}">
-<link rel="stylesheet" href="{{ asset('css/sweetalert2.css') }}">
-<script src="{{ asset('js/filament/filament/location.js') }}"></script>
+<script src="{{ asset('js/index.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
 <x-filament-panels::page>
-
     <div class="container-attend">
         <h1 class="text-3xl font-bold hello">Hello, {{ ucfirst(Auth::user()->name) }}!</h1>
-        <form action="{{ route('presensi.store') }}" method="POST" id="presensi-form">
+
+        <div class="mb-4">
+            <span id="checkin-time"></span>
+        </div>
+
+        <form action="{{ route('presensi.store') }}" method="POST" id="checkin-form" class="form-checkin"
+            onsubmit="localStorage.setItem('startTime', new
+                Date().getTime());">
             @csrf
-            <input type="hidden" id="location-input" name="location">
             <input type="hidden" name="status" value="hadir">
+            <input type="hidden" name="location" id="location-input">
+
             <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-            <x-filament::button type="submit" class="button-attend">
-                Hadir
-            </x-filament::button>
+            <button type="submit" class="button-attend button-checkin">
+                <b>Hadir</b>
+            </button>
         </form>
 
+        <form method="POST" id="checkout-form" class="form-checkout" onsubmit="localStorage.removeItem('startTime');">
+            @csrf
+            @method('PUT')
+            <input type="hidden" name="location" id="location-input-checkout">
+            <button type="submit" class="button-attend button-checkout">
+                <b>Pulang</b>
+            </button>
+
+
+        </form>
 
         <x-filament::badge icon="ionicon-location" class="location">
             <span id="location">Memuat lokasi...</span>
         </x-filament::badge>
-    </div>
-    @if (session('success'))
-        <div x-data="{ show: true }" :style="show ? 'display: flex;' : 'display: none;'"
-            class="container-success justify-center fixed p-6 rounded-xl shadow-xl z-50 text-center
-        bg-white text-gray-800 dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-700
-        animate-bounce-in transition duration-300 ease-in-out">
-            <div class="flex justify-center mb-4">
-                <div class="icon">
-                    {{ svg('heroicon-o-check-circle') }}
+        @error('location')
+            <div class=" text-sm mb-2">Lokasi tidak ditemukan!</div>
+        @enderror
+
+        @if (session('success'))
+            <div
+                class="container-success justify-center fixed p-6 rounded-xl shadow-xl z-50 text-center
+                bg-white text-gray-800 dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-700
+                animate-bounce-in transition duration-300 ease-in-out">
+                <div class="flex justify-center mb-4">
+                    <div class="icon">
+                        {{ svg('heroicon-o-check-circle') }}
+                    </div>
+                </div>
+                <p class="success">{{ session('success') }}</p>
+                <div class="button-ok">
+                    <x-filament::button onclick="this.closest('.container-success').style.display='none';">
+                        OK
+                    </x-filament::button>
                 </div>
             </div>
-            <p class="success">{{ session('success') }}</p>
-            <div class="button-ok">
-                <x-filament::button @click="show = false">
-                    OK
-                </x-filament::button>
-            </div>
-        </div>
-    @endif
+        @endif
 
+        @if (session('presensi_id'))
+            <script>
+                localStorage.setItem('presensi_id', '{{ session('presensi_id') }}');
+            </script>
+        @endif
+        @if (session('checkedIn'))
+            <script>
+                localStorage.setItem('checkedIn', '{{ session('checkedIn') }}');
+            </script>
+        @endif
+    </div>
 </x-filament-panels::page>

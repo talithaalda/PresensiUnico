@@ -39,7 +39,9 @@ class AppPanelProvider extends PanelProvider
             ->brandLogoHeight('3rem')
             ->darkModeBrandLogo(asset('images/logo-name-dark.png'))
             ->login()
-            ->registration()
+            // ->registration()
+            // ->passwordReset()
+            // ->emailVerification()
             ->userMenuItems([
                 MenuItem::make()
                     ->label('Admin')

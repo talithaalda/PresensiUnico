@@ -38,7 +38,9 @@ class PresensiResource extends Resource
                         'sakit' => 'Sakit',
                     ])
                     ->required(),
-                Forms\Components\DateTimePicker::make('created_at')->label('Waktu Presensi')
+                Forms\Components\DateTimePicker::make('created_at')->label('Waktu Check In')
+                    ->required(),
+                Forms\Components\DateTimePicker::make('checkout')->label('Waktu Check Out')
                     ->required(),
                 Forms\Components\TextInput::make('location')->label('Lokasi')->required(),
             ]);
@@ -55,27 +57,70 @@ class PresensiResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->color(fn(string $state): string => match ($state) {
-                        'hadir' => 'success',
+                        'pulang' => 'success',
                         'tidak hadir' => 'danger',
-                        'izin' => 'warning',
+                        'hadir' => 'warning',
                         'sakit' => 'danger',
                     }),
                 Tables\Columns\TextColumn::make('user.position')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->label('Posisi'),
 
-                Tables\Columns\TextColumn::make('tanggal')
-                    ->label('Tanggal')
+                Tables\Columns\TextColumn::make('checkin')
+                    ->label('Check In')
                     ->sortable(query: function (Builder $query, string $direction): Builder {
                         return $query->orderBy('created_at', $direction);
                     })
-                    ->getStateUsing(fn($record) => $record->created_at->format('d/m/Y')),
-                Tables\Columns\TextColumn::make('waktu')
-                    ->label('Waktu Presensi')
+                    ->getStateUsing(function ($record) {
+                        return $record->created_at->format('H:i d/m/Y');
+                    }),
+                // Tanggal Check Out Column
+                Tables\Columns\TextColumn::make('checkout')
+                    ->label('Check Out')
                     ->sortable(query: function (Builder $query, string $direction): Builder {
-                        return $query->orderBy('created_at', $direction);
+                        return $query->orderBy('checkout', $direction);
                     })
-                    ->getStateUsing(fn($record) => $record->created_at->format('H:i')),
+                    ->getStateUsing(function ($record) {
+                        if ($record->checkout) {
+                            return $record->checkout->format('H:i d/m/Y');
+                        }
+                        return 'Belum Check Out';
+                    }),
+                Tables\Columns\TextColumn::make('selisih_waktu')
+                    ->label('Lama Waktu')
+                    ->getStateUsing(function ($record) {
+                        if ($record->checkout) {
+                            $checkinTime = $record->created_at;
+                            $checkoutTime = $record->checkout;
+
+                            $diffInSeconds = $checkinTime->diffInSeconds($checkoutTime);
+
+                            $hours = floor($diffInSeconds / 3600);
+                            $minutes = floor(($diffInSeconds % 3600) / 60);
+                            $seconds = $diffInSeconds % 60;
+
+                            $output = [];
+
+                            if ($hours > 0) {
+                                $output[] = "{$hours} jam";
+                            }
+
+                            if ($minutes > 0) {
+                                $output[] = "{$minutes} menit";
+                            }
+
+                            if ($seconds > 0 || empty($output)) {
+                                $output[] = "{$seconds} detik";
+                            }
+
+                            return implode(' ', $output);
+                        }
+                        return 'Belum Check Out';
+                    }),
+
+
+
                 Tables\Columns\TextColumn::make('location')
                     ->label('Lokasi')
                     ->sortable()
@@ -94,8 +139,8 @@ class PresensiResource extends Resource
                     ->placeholder('Select Status'),
                 Filter::make('created_at')
                     ->form([
-                        DatePicker::make('created_from')->label('Dari Tanggal'),
-                        DatePicker::make('created_until')->label('Sampai Tanggal'),
+                        DatePicker::make('created_from')->label('Dari Tanggal Check In'),
+                        DatePicker::make('created_until')->label('Sampai Tanggal Check In'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -115,6 +160,33 @@ class PresensiResource extends Resource
                         }
                         if ($data['created_until'] ?? null) {
                             $indicators['created_until'] = 'Created until ' . Carbon::parse($data['created_until'])->toFormattedDateString();
+                        }
+
+                        return $indicators;
+                    }),
+                Filter::make('checkout')
+                    ->form([
+                        DatePicker::make('checkout_from')->label('Dari Tanggal Check Out'),
+                        DatePicker::make('checkout_until')->label('Sampai Tanggal Check Out'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['checkout_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['checkout_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['checkout_from'] ?? null) {
+                            $indicators['checkout_from'] = 'Created from ' . Carbon::parse($data['checkout_from'])->toFormattedDateString();
+                        }
+                        if ($data['checkout_until'] ?? null) {
+                            $indicators['checkout_until'] = 'Created until ' . Carbon::parse($data['checkout_until'])->toFormattedDateString();
                         }
 
                         return $indicators;
