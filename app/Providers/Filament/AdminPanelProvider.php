@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\IsAuthenticated;
+use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -30,13 +31,17 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::hex('#38BDF8'),
             ])
+            ->defaultThemeMode(ThemeMode::Dark)
+            ->brandLogo(asset('images/logo-name.png'))
+            ->brandLogoHeight('3rem')
+            ->darkModeBrandLogo(asset('images/logo-name-dark.png'))
             ->userMenuItems([
                 MenuItem::make()
                     ->label('Presensi')
                     ->icon('heroicon-o-cog-6-tooth')
-                    ->url('/app')
+                    ->url('/')
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

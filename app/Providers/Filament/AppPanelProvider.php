@@ -2,7 +2,8 @@
 
 namespace App\Providers\Filament;
 
-
+use App\Filament\App\Pages\PresensiPage;
+use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -28,11 +29,15 @@ class AppPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->id('app')
-            ->path('app')
+            ->id('/')
+            ->path('/')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::hex('#38BDF8'),
             ])
+            ->defaultThemeMode(ThemeMode::Dark)
+            ->brandLogo(asset('images/logo-name.png'))
+            ->brandLogoHeight('3rem')
+            ->darkModeBrandLogo(asset('images/logo-name-dark.png'))
             ->login()
             ->registration()
             ->userMenuItems([
@@ -45,11 +50,7 @@ class AppPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
             ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
             ->pages([
-                Pages\Dashboard::class,
-            ])
-            ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\\Filament\\App\\Widgets')
-            ->widgets([
-                Widgets\AccountWidget::class,
+                PresensiPage::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -64,6 +65,7 @@ class AppPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->topNavigation();
     }
 }

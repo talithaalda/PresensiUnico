@@ -40,6 +40,7 @@ class PresensiResource extends Resource
                     ->required(),
                 Forms\Components\DateTimePicker::make('created_at')->label('Waktu Presensi')
                     ->required(),
+                Forms\Components\TextInput::make('location')->label('Lokasi')->required(),
             ]);
     }
 
@@ -75,6 +76,10 @@ class PresensiResource extends Resource
                         return $query->orderBy('created_at', $direction);
                     })
                     ->getStateUsing(fn($record) => $record->created_at->format('H:i')),
+                Tables\Columns\TextColumn::make('location')
+                    ->label('Lokasi')
+                    ->sortable()
+                    ->searchable(),
 
             ])
             ->defaultSort('created_at', 'desc')

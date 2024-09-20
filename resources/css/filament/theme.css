@@ -1,0 +1,14 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.button-attend{
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-width: 1px;
+    border-color: transparent;
+}

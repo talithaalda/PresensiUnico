@@ -18,7 +18,7 @@ class AdminMiddleware
     {
         if (!Auth::check()) {
             // Jika pengguna belum login, arahkan ke halaman login
-            return redirect('/app/login');
+            return redirect('/login');
         }
 
         if (Auth::user()->is_admin) {

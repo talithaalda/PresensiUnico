@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.button-attend {
+    border-radius: 50%;
+    padding: 8rem 7rem;
+    font-size: 24px;
+    transition: box-shadow 0.3s ease-in-out; /* Transition untuk efek halus */
+}
+
+.button-attend:hover {
+    box-shadow: 0 0 30px 10px rgba(48, 133, 214, 0.5); /* Efek glow */
+}
+.container-attend {
+    height: 80vh !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.location{
+    margin: 10% 10% 0 10%;
+    padding: 1rem 1rem;
+    font-size: 16px;
+}
+body {
+    --swal-bg: #fff;
+    --swal-text: #000;
+    --swal-confirm-bg: #3085d6;
+    --swal-confirm-text: #fff;
+}
+
+/* Dark Mode */
+body[data-theme='dark'] {
+    --swal-bg: #333;
+    --swal-text: #fff;
+    --swal-confirm-bg: #1e90ff;
+    --swal-confirm-text: #fff;
+}
+
+.swal2-popup {
+    background-color: var(--swal-bg) !important;
+    color: var(--swal-text) !important;
+}
+
+.swal2-confirm {
+    background-color: var(--swal-confirm-bg) !important;
+    color: var(--swal-confirm-text) !important;
+}
+.icon{
+    width: 200px;
+    color: #3085d6;
+}
+.success{
+    font-size: 25px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+.button-ok{
+   display: flex;
+   justify-items: end;
+
+}
+.container-success{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30em;
+}
+.fi-main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.hello{
+    margin-bottom: 1rem;
+}
+.fi-badge-icon{
+    font-size: 50px;
+    height: auto;
+    width: 30px;
+}
