@@ -23,6 +23,8 @@ class PresensiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
 
+    protected static ?string $navigationLabel = 'Presensi';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -100,30 +102,20 @@ class PresensiResource extends Resource
                             $minutes = floor(($diffInSeconds % 3600) / 60);
                             $seconds = $diffInSeconds % 60;
 
-                            $output = [];
+                            // Tambahkan padding dengan str_pad
+                            $hours = str_pad($hours, 2, '0', STR_PAD_LEFT);
+                            $minutes = str_pad($minutes, 2, '0', STR_PAD_LEFT);
+                            $seconds = str_pad($seconds, 2, '0', STR_PAD_LEFT);
 
-                            if ($hours > 0) {
-                                $output[] = "{$hours} jam";
-                            }
-
-                            if ($minutes > 0) {
-                                $output[] = "{$minutes} menit";
-                            }
-
-                            if ($seconds > 0 || empty($output)) {
-                                $output[] = "{$seconds} detik";
-                            }
-
-                            return implode(' ', $output);
+                            return "{$hours}:{$minutes}:{$seconds}";
                         }
                         return 'Belum Check Out';
                     }),
 
-
-
                 Tables\Columns\TextColumn::make('location')
                     ->label('Lokasi')
                     ->sortable()
+                    ->limit(18)
                     ->searchable(),
 
             ])
@@ -132,9 +124,7 @@ class PresensiResource extends Resource
                 SelectFilter::make('status')
                     ->options([
                         'hadir' => 'Hadir',
-                        'tidak hadir' => 'Tidak hadir',
-                        'izin' => 'Izin',
-                        'sakit' => 'Sakit',
+                        'pulang' => 'Pulang',
                     ])
                     ->placeholder('Select Status'),
                 Filter::make('created_at')
@@ -192,8 +182,8 @@ class PresensiResource extends Resource
                         return $indicators;
                     }),
             ])
-
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
