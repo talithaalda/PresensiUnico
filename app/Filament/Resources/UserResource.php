@@ -37,7 +37,7 @@ class UserResource extends Resource
                     ->password()
                     ->autocomplete('new-password')
                     ->revealable()
-                    ->hiddenOn('edit')
+                    // ->hiddenOn('edit')
                     ->minLength(6)
                     ->rules([
                         Password::min(6)
@@ -49,7 +49,7 @@ class UserResource extends Resource
                     ->password()
                     ->label('Confirm Password')
                     ->revealable()
-                    ->hiddenOn('edit')
+                    // ->hiddenOn('edit')
                     ->same('password')
                     ->nullable(),
                 Forms\Components\Toggle::make('is_admin'),

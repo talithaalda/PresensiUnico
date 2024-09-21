@@ -17,7 +17,6 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
-            // Jika pengguna belum login, arahkan ke halaman login
             return redirect('/login');
         }
 
@@ -25,7 +24,6 @@ class AdminMiddleware
             return $next($request);
         }
 
-        // Jika pengguna tidak punya hak akses admin, arahkan ke halaman utama
         return redirect('/');
     }
 }

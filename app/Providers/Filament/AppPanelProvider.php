@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\App\Pages\Auth\Register;
+use App\Filament\App\Pages\Auth\RequestPasswordReset;
 use App\Filament\App\Pages\PresensiPage;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -9,7 +11,6 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
 use Filament\Pages;
-use Filament\Pages\Auth\Register;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -39,9 +40,9 @@ class AppPanelProvider extends PanelProvider
             ->brandLogoHeight('3rem')
             ->darkModeBrandLogo(asset('images/logo-name-dark.png'))
             ->login()
-            // ->registration()
-            // ->passwordReset()
-            // ->emailVerification()
+            ->registration(Register::class)
+            ->passwordReset(RequestPasswordReset::class)
+            ->emailVerification()
             ->userMenuItems([
                 MenuItem::make()
                     ->label('Admin')
