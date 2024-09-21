@@ -36,6 +36,7 @@ class AppPanelProvider extends PanelProvider
                 'primary' => Color::hex('#38BDF8'),
             ])
             ->defaultThemeMode(ThemeMode::Dark)
+            ->favicon(asset('images/logo.png'))
             ->brandLogo(asset('images/logo-name.png'))
             ->brandLogoHeight('3rem')
             ->darkModeBrandLogo(asset('images/logo-name-dark.png'))
