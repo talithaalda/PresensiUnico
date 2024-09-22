@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Presensi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PresensiController extends Controller
 {
@@ -13,14 +14,12 @@ class PresensiController extends Controller
             'location' => 'required|string',
             'status' => 'required|string',
             'user_id' => 'required|exists:users,id',
-            'chekout' => 'nullable|date',
         ]);
 
-        $data = $request->all();
-        $data['checkout'] = null;
-        $presensi = Presensi::create($data);
-
-        return redirect()->back()->with(['success' => 'Presensi berhasil!', 'presensi_id' => $presensi->id, 'checkedIn' => "true"]);
+        $presensi = Presensi::create($request->all());
+        $user = $presensi->user;
+        $user->update(['checkedIn' => true]);
+        return redirect()->back()->with(['success' => 'Presensi berhasil!']);
     }
     public function update(Request $request, $id)
     {
@@ -34,7 +33,8 @@ class PresensiController extends Controller
             'location' => $request->location,
             'checkout' => now()
         ]);
-
-        return redirect()->back()->with(['success' => 'Presensi pulang berhasil!', 'presensi_id' => $presensi->id, 'checkedIn' => "false"]);
+        $user = $presensi->user;
+        $user->update(['checkedIn' => false]);
+        return redirect()->back()->with(['success' => 'Presensi pulang berhasil!']);
     }
 }

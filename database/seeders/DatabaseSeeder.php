@@ -21,7 +21,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'talithaalda@gmail.com',
             'password' => Hash::make('123456'),
             'is_admin' => true,
-            'position' => 'admin',
         ]);
     }
 }

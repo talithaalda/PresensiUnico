@@ -5,34 +5,33 @@
 <x-filament-panels::page>
     <div class="container-attend">
         <h1 class="text-3xl font-bold hello">Hello, {{ ucfirst(Auth::user()->name) }}!</h1>
+        @if ($user->checkedIn == true)
+            <div class="mb-4">
+                <span id="checkin-time" class="checkin-time"></span>
+            </div>
+        @endif
+        @if ($user->checkedIn == false)
+            <form action="{{ route('presensi.store') }}" method="POST" id="checkin-form">
+                @csrf
+                <input type="hidden" name="status" value="hadir">
+                <input type="hidden" name="location" id="location-input-checkin">
 
-        <div class="mb-4">
-            <span id="checkin-time"></span>
-        </div>
-
-        <form action="{{ route('presensi.store') }}" method="POST" id="checkin-form" class="form-checkin"
-            onsubmit="localStorage.setItem('startTime', new
-                Date().getTime());">
-            @csrf
-            <input type="hidden" name="status" value="hadir">
-            <input type="hidden" name="location" id="location-input">
-
-            <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-            <button type="submit" class="button-attend button-checkin">
-                <b>Hadir</b>
-            </button>
-        </form>
-
-        <form method="POST" id="checkout-form" class="form-checkout" onsubmit="localStorage.removeItem('startTime');">
-            @csrf
-            @method('PUT')
-            <input type="hidden" name="location" id="location-input-checkout">
-            <button type="submit" class="button-attend button-checkout">
-                <b>Pulang</b>
-            </button>
-
-
-        </form>
+                <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                <button type="submit" class="button-attend button-checkin">
+                    <b>Hadir</b>
+                </button>
+            </form>
+        @elseif ($user->checkedIn == true)
+            <input type="hidden" id="checkin-time-input" value="{{ $presensi->created_at }}">
+            <form method="POST" action="{{ route('presensi.update', $presensiId) }}" id="checkout-form">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="location" id="location-input-checkout">
+                <button type="submit" class="button-attend button-checkout">
+                    <b>Pulang</b>
+                </button>
+            </form>
+        @endif
 
         <x-filament::badge icon="ionicon-location" class="location">
             <span id="location">Memuat lokasi...</span>
@@ -60,15 +59,5 @@
             </div>
         @endif
 
-        @if (session('presensi_id'))
-            <script>
-                localStorage.setItem('presensi_id', '{{ session('presensi_id') }}');
-            </script>
-        @endif
-        @if (session('checkedIn'))
-            <script>
-                localStorage.setItem('checkedIn', '{{ session('checkedIn') }}');
-            </script>
-        @endif
     </div>
 </x-filament-panels::page>

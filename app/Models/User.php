@@ -22,6 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'position',
         'is_admin',
+        'checkedIn',
     ];
 
     /**
@@ -46,7 +47,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
-    public function Presensi()
+    public function presensis()
     {
         return $this->hasMany(Presensi::class);
     }

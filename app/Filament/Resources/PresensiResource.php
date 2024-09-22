@@ -16,6 +16,9 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class PresensiResource extends Resource
 {
@@ -23,7 +26,8 @@ class PresensiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
 
-    protected static ?string $navigationLabel = 'Presensi';
+    public static ?string $pluralModelLabel = 'Presensi';
+
 
     public static function form(Form $form): Form
     {
@@ -35,15 +39,12 @@ class PresensiResource extends Resource
                 Forms\Components\Select::make('status')
                     ->options([
                         'hadir' => 'Hadir',
-                        'tidak hadir' => 'Tidak hadir',
-                        'izin' => 'Izin',
-                        'sakit' => 'Sakit',
+                        'pulang' => 'Pulang',
                     ])
                     ->required(),
                 Forms\Components\DateTimePicker::make('created_at')->label('Waktu Check In')
                     ->required(),
-                Forms\Components\DateTimePicker::make('checkout')->label('Waktu Check Out')
-                    ->required(),
+                Forms\Components\DateTimePicker::make('checkout')->label('Waktu Check Out'),
                 Forms\Components\TextInput::make('location')->label('Lokasi')->required(),
             ]);
     }
@@ -64,10 +65,6 @@ class PresensiResource extends Resource
                         'hadir' => 'warning',
                         'sakit' => 'danger',
                     }),
-                Tables\Columns\TextColumn::make('user.position')
-                    ->sortable()
-                    ->searchable()
-                    ->label('Posisi'),
 
                 Tables\Columns\TextColumn::make('checkin')
                     ->label('Check In')
@@ -115,11 +112,18 @@ class PresensiResource extends Resource
                 Tables\Columns\TextColumn::make('location')
                     ->label('Lokasi')
                     ->sortable()
-                    ->limit(18)
+                    ->limit(20)
                     ->searchable(),
 
             ])
             ->defaultSort('created_at', 'desc')
+            ->headerActions([
+                ExportAction::make()
+                    ->exports([
+                        ExcelExport::make('table')->fromTable(),
+                    ]),
+            ])
+
             ->filters([
                 SelectFilter::make('status')
                     ->options([
@@ -190,6 +194,7 @@ class PresensiResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
                 ]),
             ]);
     }

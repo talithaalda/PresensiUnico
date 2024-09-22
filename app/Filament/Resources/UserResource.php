@@ -32,12 +32,11 @@ class UserResource extends Resource
                     ->unique(table: User::class, column: 'email', ignoreRecord: true)
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('position'),
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->autocomplete('new-password')
                     ->revealable()
-                    // ->hiddenOn('edit')
+                    ->hiddenOn('edit')
                     ->minLength(6)
                     ->rules([
                         Password::min(6)
@@ -49,7 +48,7 @@ class UserResource extends Resource
                     ->password()
                     ->label('Confirm Password')
                     ->revealable()
-                    // ->hiddenOn('edit')
+                    ->hiddenOn('edit')
                     ->same('password')
                     ->nullable(),
                 Forms\Components\Toggle::make('is_admin'),
@@ -66,9 +65,6 @@ class UserResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('position')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('is_admin')->formatStateUsing(fn($state) => $state ? 'Admin' : 'Karyawan')

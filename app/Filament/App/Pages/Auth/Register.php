@@ -31,7 +31,6 @@ class Register extends BaseRegister
                         $this->getEmailFormComponent(),
                         $this->getPasswordFormComponent(),
                         $this->getPasswordConfirmationFormComponent(),
-                        TextInput::make('position'),
                         Toggle::make('is_admin')
                             ->default(false)
                             ->required()
@@ -53,8 +52,19 @@ class Register extends BaseRegister
                     ->letters()
                     ->numbers()
             ])
+            ->autocomplete('new-password')
             ->dehydrateStateUsing(fn($state) => Hash::make($state))
             ->same('passwordConfirmation')
             ->validationAttribute(__('filament-panels::pages/auth/register.form.password.validation_attribute'));
+    }
+    protected function getEmailFormComponent(): Component
+    {
+        return TextInput::make('email')
+            ->label(__('filament-panels::pages/auth/register.form.email.label'))
+            ->email()
+            ->required()
+            ->maxLength(255)
+            ->autocomplete('off')
+            ->unique($this->getUserModel());
     }
 }

@@ -44,6 +44,7 @@ class AppPanelProvider extends PanelProvider
             ->registration(Register::class)
             ->passwordReset(RequestPasswordReset::class)
             ->emailVerification()
+            ->navigation(false)
             ->userMenuItems([
                 MenuItem::make()
                     ->label('Admin')

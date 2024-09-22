@@ -8,6 +8,8 @@ use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ListRecords\Tab;
 use Illuminate\Database\Eloquent\Builder;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class ListPresensis extends ListRecords
 {
@@ -19,6 +21,7 @@ class ListPresensis extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
     public function getTabs(): array
     {
         return [

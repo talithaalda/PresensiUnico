@@ -101,13 +101,7 @@ body[data-theme='dark'] {
     height: auto;
     width: 30px;
 }
-.form-checkin{
-    display : none;
-}
-.form-checkout{
-    display : none;
-}
-.timer{
+.checkin-time{
    font-weight: bold;
     font-size: 1.2rem;
     padding: 4px;
