@@ -5,12 +5,12 @@
 <x-filament-panels::page>
     <div class="container-attend">
         <h1 class="text-3xl font-bold hello">Hello, {{ ucfirst(Auth::user()->name) }}!</h1>
-        @if ($user->checkedIn == true)
+        @if ($user->checkedIn == true || $presensi?->status == 'hadir')
             <div class="mb-4">
                 <span id="checkin-time" class="checkin-time"></span>
             </div>
         @endif
-        @if ($user->checkedIn == false)
+        @if ($user->checkedIn == false || $presensi?->status == 'pulang')
             <form action="{{ route('presensi.store') }}" method="POST" id="checkin-form">
                 @csrf
                 <input type="hidden" name="status" value="hadir">
@@ -21,7 +21,7 @@
                     <b>Hadir</b>
                 </button>
             </form>
-        @elseif ($user->checkedIn == true)
+        @elseif ($user->checkedIn == true || $presensi?->status == 'hadir')
             <input type="hidden" id="checkin-time-input" value="{{ $presensi->created_at }}">
             <form method="POST" action="{{ route('presensi.update', $presensiId) }}" id="checkout-form">
                 @csrf

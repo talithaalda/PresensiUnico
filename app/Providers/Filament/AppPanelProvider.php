@@ -2,8 +2,10 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\App\Pages\Auth\EmailVerificationPrompt;
 use App\Filament\App\Pages\Auth\Register;
 use App\Filament\App\Pages\Auth\RequestPasswordReset;
+use App\Filament\App\Pages\EditProfile;
 use App\Filament\App\Pages\PresensiPage;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -23,6 +25,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use PharIo\Manifest\Email;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -43,7 +46,8 @@ class AppPanelProvider extends PanelProvider
             ->login()
             ->registration(Register::class)
             ->passwordReset(RequestPasswordReset::class)
-            ->emailVerification()
+            ->emailVerification(EmailVerificationPrompt::class)
+            ->profile(EditProfile::class)
             ->navigation(false)
             ->userMenuItems([
                 MenuItem::make()

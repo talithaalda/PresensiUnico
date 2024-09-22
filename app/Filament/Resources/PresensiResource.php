@@ -36,16 +36,36 @@ class PresensiResource extends Resource
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
                     ->required(),
+
                 Forms\Components\Select::make('status')
                     ->options([
                         'hadir' => 'Hadir',
                         'pulang' => 'Pulang',
                     ])
+                    ->required()
+                    ->reactive(), // Membuat field ini reactive
+
+                Forms\Components\DateTimePicker::make('created_at')
+                    ->label('Waktu Check In')
                     ->required(),
-                Forms\Components\DateTimePicker::make('created_at')->label('Waktu Check In')
+
+                Forms\Components\DateTimePicker::make('checkout')
+                    ->label('Waktu Check Out')
+                    ->reactive() // Membuat field ini reactive
+                    ->required(function (callable $get) {
+                        // Jika status adalah 'pulang', checkout wajib diisi
+                        return $get('status') === 'pulang';
+                    })
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        // Jika checkout diisi, status otomatis jadi 'pulang'
+                        if ($state) {
+                            $set('status', 'pulang');
+                        }
+                    }),
+
+                Forms\Components\TextInput::make('location')
+                    ->label('Lokasi')
                     ->required(),
-                Forms\Components\DateTimePicker::make('checkout')->label('Waktu Check Out'),
-                Forms\Components\TextInput::make('location')->label('Lokasi')->required(),
             ]);
     }
 
@@ -116,7 +136,7 @@ class PresensiResource extends Resource
                     ->searchable(),
 
             ])
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('updated_at', 'desc')
             ->headerActions([
                 ExportAction::make()
                     ->exports([
