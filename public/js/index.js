@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const targetLatitude = -7.5450414;
     const targetLongitude = 111.6599448;
     const targetLocationName = "Unico Cafe, Caruban, Kab Madiun, Jawa Timur";
-    const proximityRadiusMeters = 50;
+    const proximityRadiusMeters = 100;
 
     function calculateDistance(lat1, lon1, lat2, lon2) {
         const R = 6371000;
