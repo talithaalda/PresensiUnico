@@ -58,6 +58,6 @@
                 </div>
             </div>
         @endif
-
+        <input type="hidden" id="location-api-key" value="{{ env('LOCATIONIQ_API_KEY') }}">
     </div>
 </x-filament-panels::page>

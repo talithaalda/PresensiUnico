@@ -7,11 +7,13 @@ use App\Filament\App\Pages\Auth\Register;
 use App\Filament\App\Pages\Auth\RequestPasswordReset;
 use App\Filament\App\Pages\EditProfile;
 use App\Filament\App\Pages\PresensiPage;
+use App\Models\User;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
+use Filament\Notifications\Notification;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -54,7 +56,29 @@ class AppPanelProvider extends PanelProvider
                     ->label('Admin')
                     ->icon('heroicon-o-cog-6-tooth')
                     ->url('/admin')
-                    ->visible(fn(): bool => Auth::user()->is_admin)
+                    ->visible(fn(): bool => Auth::user()->is_admin),
+                // MenuItem::make()
+                //     ->label('Delete Account')
+                //     ->icon('heroicon-o-trash')
+                //     ->action(function () {
+                //         // Delete the authenticated user
+                //         $user = User::find(Auth::user()->id);
+                //         Auth::logout();
+                //         $user->delete();
+                //         // Delete the user account
+
+
+                //         // Show a notification
+                //         Notification::make()
+                //             ->title('Account deleted')
+                //             ->success()
+                //             ->send();
+
+                //         // Redirect to the login page
+                //         return redirect()->route('login');
+                //     })
+                //     ->requiresConfirmation()
+                //     ->color('danger'),
             ])
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
             ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
