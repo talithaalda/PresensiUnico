@@ -57,28 +57,12 @@ class AppPanelProvider extends PanelProvider
                     ->icon('heroicon-o-cog-6-tooth')
                     ->url('/admin')
                     ->visible(fn(): bool => Auth::user()->is_admin),
-                // MenuItem::make()
-                //     ->label('Delete Account')
-                //     ->icon('heroicon-o-trash')
-                //     ->action(function () {
-                //         // Delete the authenticated user
-                //         $user = User::find(Auth::user()->id);
-                //         Auth::logout();
-                //         $user->delete();
-                //         // Delete the user account
 
-
-                //         // Show a notification
-                //         Notification::make()
-                //             ->title('Account deleted')
-                //             ->success()
-                //             ->send();
-
-                //         // Redirect to the login page
-                //         return redirect()->route('login');
-                //     })
-                //     ->requiresConfirmation()
-                //     ->color('danger'),
+                MenuItem::make()
+                    ->label('Delete Account')
+                    ->icon('heroicon-o-trash')
+                    ->url('/delete-account')
+                    ->color('danger'),
             ])
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
             ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
