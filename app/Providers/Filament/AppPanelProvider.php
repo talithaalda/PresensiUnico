@@ -62,7 +62,8 @@ class AppPanelProvider extends PanelProvider
                     ->label('Delete Account')
                     ->icon('heroicon-o-trash')
                     ->url('/delete-account')
-                    ->color('danger'),
+                    ->color('danger')
+                    ->visible(fn(): bool => Auth::user()->is_admin === false),
             ])
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
             ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
