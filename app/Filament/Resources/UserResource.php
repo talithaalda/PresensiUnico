@@ -11,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 
 class UserResource extends Resource
@@ -67,6 +68,10 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('email_verified_at')
+                    ->label('Email Verified')
+                    ->getStateUsing(fn($record) => $record->email_verified_at !== null ? 'Yes' : 'No'),
+
                 Tables\Columns\TextColumn::make('is_admin')->formatStateUsing(fn($state) => $state ? 'Admin' : 'Karyawan')
                     ->sortable()
                     ->searchable(),
@@ -82,7 +87,8 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn($record) => Auth::user()->id !== $record->id),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

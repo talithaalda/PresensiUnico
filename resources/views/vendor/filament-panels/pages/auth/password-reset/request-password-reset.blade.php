@@ -10,7 +10,8 @@
     <x-filament-panels::form wire:submit="request">
         {{ $this->form }}
         <p class="text-center text-sm text-gray-500 dark:text-gray-400">
-            <span>Please also check your <b class="text-white"> spam or junk </b> folder if you haven't received the
+            <span>Please also check your <b class="text-black dark:text-white"> spam or junk </b> folder if you haven't
+                received the
                 email.</span>
         </p>
         <x-filament-panels::form.actions :actions="$this->getCachedFormActions()" :full-width="$this->hasFullWidthFormActions()" />
