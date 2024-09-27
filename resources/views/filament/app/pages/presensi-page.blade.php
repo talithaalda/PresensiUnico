@@ -32,8 +32,8 @@
                         <div id="my_camera" class="camera"></div>
                         <div id="results" class="camera" style="display: none"></div>
                         <div class="w-full flex justify-end justify-items-end pe-6">
-                            <input class=" p-4 my-2 rounded-md sm:block md:block lg:hidden z-30"
-                                style="margin-top: -50px" type="button" id="btnFrontBack" value="Back" />
+                            <input class="my-2 rounded-md sm:block md:block lg:hidden z-30" style="margin-top: -50px"
+                                type="button" id="btnFrontBack" value="Back" />
                         </div>
                         <x-filament::button class="font-bold button-snap button-camera" id="button-snap" type="button"
                             onClick="take_snapshot()">
@@ -70,8 +70,8 @@
                         <div id="my_camera" class="camera"></div>
                         <div id="results" class="camera" style="display: none"></div>
                         <div class="w-full flex justify-end justify-items-end pe-6">
-                            <input class=" p-4 my-2 rounded-md sm:block md:block lg:hidden z-30"
-                                style="margin-top: -50px" type="button" id="btnFrontBack" value="Back" />
+                            <input class=" my-2 rounded-md sm:block md:block lg:hidden z-30" style="margin-top: -50px"
+                                type="button" id="btnFrontBack" value="Back" />
                         </div>
                         <x-filament::button class="font-bold button-snap" id="button-snap" type="button"
                             onClick="take_snapshot()">
