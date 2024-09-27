@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-#my_camera, #results {
-    width: 520px !important;
-    height: 350px !important;
-    margin-bottom: 10px;
-}
 
 .button-attend {
     border-radius: 20px;
@@ -126,16 +121,22 @@ body[data-theme='dark'] {
 .button-camera:hover {
     background-color: #FBD341 !important;
 }
+#my_camera, #results {
+    /* width: 520px !important;
+    height: 350px !important; */
+    margin-bottom: 10px;
+}
+
 @media (max-width: 768px) {
     #my_camera, #results {
-        width: 480px !important;
-        height: 320px !important;
+        /* width: 480px !important;
+        height: 320px !important; */
         margin-bottom: 1rem;
     }
 }
 @media (max-width: 480px) {
     #my_camera, #results {
-        width: 320px !important;
-        height: 240px !important;
+        /* width: 320px !important;
+        height: 240px !important; */
     }
 }
