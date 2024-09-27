@@ -31,8 +31,6 @@
                     <div class="flex flex-col items-center gap-0">
                         <div id="my_camera" class="camera"></div>
                         <div id="results" class="camera" style="display: none"></div>
-                        <button onclick="toggleCamera()">Ganti Kamera</button>
-
                         <x-filament::button class="font-bold button-snap button-camera" id="button-snap" type="button"
                             onClick="take_snapshot()">
                             <x-ionicon-camera-sharp class="w-6 h-6" />
@@ -111,70 +109,38 @@
     </div>
 </x-filament-panels::page>
 <script>
-    var cameras = []; // Buat array kosong untuk menyimpan perangkat video yang tersedia
-
-    // Fungsi untuk mendapatkan dan menyimpan deviceId dari kamera yang ditemukan
-    function getCameras() {
-        navigator.mediaDevices.enumerateDevices() // Ambil perangkat yang tersedia
-            .then(function(devices) {
-                var i = 0;
-                devices.forEach(function(device) {
-                    if (device.kind === "videoinput") { // Filter hanya perangkat video
-                        cameras[i] = device.deviceId; // Simpan deviceId kamera dalam array
-                        i++;
-                    }
-                });
-
-                // Periksa apakah ada kamera yang terdeteksi
-                if (cameras.length > 0) {
-                    initializeCamera(0); // Inisialisasi kamera pertama (0 untuk depan, 1 untuk belakang)
-                } else {
-                    console.error("Tidak ada kamera yang ditemukan.");
-                }
-            })
-            .catch(function(err) {
-                console.error("Error mendapatkan perangkat kamera: ", err);
-            });
-    }
-
-    // Fungsi untuk menginisialisasi kamera berdasarkan deviceId
-    function initializeCamera(cameraIndex) {
-        if (cameras[cameraIndex]) {
-            Webcam.set({
-                width: 500,
-                height: 350,
+    function setCameraDimensions() {
+        if (window.innerWidth <= 480) {
+            Webcam.set('constraints', {
+                width: 320, // Untuk layar kecil (mobile)
+                height: 240,
                 image_format: 'jpeg',
                 jpeg_quality: 90,
-                constraints: {
-                    video: {
-                        deviceId: {
-                            exact: cameras[cameraIndex]
-                        } // Set deviceId kamera yang dipilih
-                    }
-                }
+                facingMode: 'environment'
             });
-            Webcam.attach('#my_camera'); // Pasang kamera di elemen dengan id 'my_camera'
+        } else if (window.innerWidth <= 768) {
+            Webcam.set({
+                width: 480, // Untuk layar tablet
+                height: 320,
+                image_format: 'jpeg',
+                jpeg_quality: 90
+            });
         } else {
-            console.error("Kamera dengan index tersebut tidak ditemukan.");
+            Webcam.set({
+                width: 520, // Untuk layar besar (desktop)
+                height: 350,
+                image_format: 'jpeg',
+                jpeg_quality: 90
+            });
         }
+        Webcam.attach('#my_camera');
     }
 
-    // Fungsi untuk mengganti antara kamera depan dan belakang
-    function toggleCamera() {
-        if (cameras.length >= 2) { // Pastikan ada lebih dari satu kamera
-            Webcam.reset(); // Reset webcam sebelum mengganti kamera
-            var currentCameraIndex = cameras.indexOf(Webcam.params.constraints.video.deviceId.exact);
-            var nextCameraIndex = currentCameraIndex === 0 ? 1 : 0; // Toggle antara kamera depan dan belakang
-            initializeCamera(nextCameraIndex); // Inisialisasi kamera baru
-        } else {
-            console.error("Hanya satu kamera yang terdeteksi.");
-        }
-    }
+    // Panggil fungsi ini saat halaman dimuat
+    setCameraDimensions();
 
-    // Panggil fungsi ini saat halaman dimuat untuk mendapatkan kamera
-    window.onload = function() {
-        getCameras(); // Dapatkan daftar kamera saat halaman dimuat
-    };
+    // Tambahkan event listener untuk merespons perubahan ukuran layar
+    window.addEventListener('resize', setCameraDimensions);
 
     function take_snapshot() {
         console.log("Tombol snapshot ditekan");
