@@ -78,7 +78,6 @@
                             </div>
                         @enderror
                         <input type="hidden" name="location" id="location-input-checkout">
-
                     </div>
                 </form>
             @endif
@@ -116,20 +115,44 @@
     </div>
 </x-filament-panels::page>
 <script>
-    Webcam.set({
-        image_format: "jpeg",
-        jpeg_quality: 90,
-        constraints: {
-            video: {
-                facingMode: {
-                    exact: "environment"
+    function setCameraDimensions() {
+        if (window.innerWidth <= 480) {
+            Webcam.set({
+                width: 320, // Untuk layar kecil (mobile)
+                height: 240,
+                image_format: 'jpeg',
+                jpeg_quality: 90,
+                constraints: {
+                    video: {
+                        facingMode: {
+                            ideal: "environment"
+                        }
+                    }
                 }
-            }
+            });
+        } else if (window.innerWidth <= 768) {
+            Webcam.set({
+                width: 480, // Untuk layar tablet
+                height: 320,
+                image_format: 'jpeg',
+                jpeg_quality: 90
+            });
+        } else {
+            Webcam.set({
+                width: 550, // Untuk layar besar (desktop)
+                height: 400,
+                image_format: 'jpeg',
+                jpeg_quality: 90
+            });
         }
-    });
+        Webcam.attach('#my_camera');
+    }
 
+    // Panggil fungsi ini saat halaman dimuat
+    setCameraDimensions();
 
-    Webcam.attach("#my_camera");
+    // Tambahkan event listener untuk merespons perubahan ukuran layar
+    window.addEventListener('resize', setCameraDimensions);
 
     function take_snapshot() {
         console.log("Tombol snapshot ditekan");
