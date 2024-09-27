@@ -84,11 +84,11 @@
         </div>
         <div>
             @if ($user->checkedIn == false || $presensi?->status == 'pulang')
-                <button type="submit" class="button-attend button-checkin mt-6">
+                <button type="submit" class="button-attend button-checkin mt-3">
                     <b>Hadir</b>
                 </button>
             @elseif ($user->checkedIn == true || $presensi?->status == 'hadir')
-                <button type="submit" class="button-attend button-checkout mt-6">
+                <button type="submit" class="button-attend button-checkout mt-3">
                     <b>Pulang</b>
                 </button>
             @endif
