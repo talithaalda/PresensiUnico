@@ -7,22 +7,25 @@
 
 <x-filament-panels::page>
     <div class="container-attend">
-        <h1 class="text-3xl font-bold hello">Hello, {{ ucfirst(Auth::user()->name) }}!</h1>
-        @if ($user->checkedIn == true || $presensi?->status == 'hadir')
-            <div class="mb-4">
-                <span id="checkin-time" class="checkin-time"></span>
-            </div>
-        @endif
         <div>
-            <x-filament::badge icon="ionicon-location" class="location">
-                <span id="location">Memuat lokasi...</span>
-            </x-filament::badge>
-            @error('location')
-                <div class=" text-sm mb-2">Lokasi tidak ditemukan!</div>
-            @enderror
+            <h1 class="text-3xl font-bold hello">Hello, {{ ucfirst(Auth::user()->name) }}!</h1>
+            @if ($user->checkedIn == true || $presensi?->status == 'hadir')
+                <div class="mb-4">
+                    <span id="checkin-time" class="checkin-time"></span>
+                </div>
+            @endif
         </div>
 
+
         <div>
+            <div class="flex flex-col items-center gap-0 mb-2">
+                <x-filament::badge icon="ionicon-location" class="location ">
+                    <span id="location">Memuat lokasi...</span>
+                </x-filament::badge>
+                @error('location')
+                    <div class=" text-sm ">Lokasi tidak ditemukan!</div>
+                @enderror
+            </div>
             @if ($user->checkedIn == false || $presensi?->status == 'pulang')
                 <form action="{{ route('presensi.store') }}" method="POST" id="checkin-form">
                     @csrf
@@ -48,9 +51,7 @@
                         <input type="hidden" name="status" value="hadir">
                         <input type="hidden" name="location" id="location-input-checkin">
                         <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-                        <button type="submit" class="button-attend button-checkin mt-6">
-                            <b>Hadir</b>
-                        </button>
+
                     </div>
                 </form>
             @elseif ($user->checkedIn == true || $presensi?->status == 'hadir')
@@ -76,18 +77,23 @@
                                 <br />
                             </div>
                         @enderror
-
                         <input type="hidden" name="location" id="location-input-checkout">
-                        <button type="submit" class="button-attend button-checkout mt-6">
-                            <b>Pulang</b>
-                        </button>
+
                     </div>
                 </form>
             @endif
         </div>
-
-
-
+        <div>
+            @if ($user->checkedIn == false || $presensi?->status == 'pulang')
+                <button type="submit" class="button-attend button-checkin mt-6">
+                    <b>Hadir</b>
+                </button>
+            @elseif ($user->checkedIn == true || $presensi?->status == 'hadir')
+                <button type="submit" class="button-attend button-checkout mt-6">
+                    <b>Pulang</b>
+                </button>
+            @endif
+        </div>
         @if (session('success'))
             <div
                 class="container-success justify-center fixed p-6 rounded-xl shadow-xl z-50 text-center
@@ -106,51 +112,21 @@
                 </div>
             </div>
         @endif
-
-
         <input type="hidden" id="location-api-key" value="{{ env('LOCATIONIQ_API_KEY') }}">
     </div>
 </x-filament-panels::page>
 <script>
-    if (window.innerWidth <= 480) {
-        Webcam.set({
-            width: 180,
-            height: 160,
-            image_format: "jpeg",
-            jpeg_quality: 90,
-            constraints: {
-                video: {
-                    facingMode: {
-                        exact: "environment"
-                    }
+    Webcam.set({
+        image_format: "jpeg",
+        jpeg_quality: 90,
+        constraints: {
+            video: {
+                facingMode: {
+                    exact: "environment"
                 }
             }
-
-        });
-    }
-    if (window.innerWidth <= 768) {
-        Webcam.set({
-            width: 480,
-            height: 320,
-            image_format: "jpeg",
-            jpeg_quality: 90,
-            constraints: {
-                video: {
-                    facingMode: {
-                        exact: "environment"
-                    }
-                }
-            }
-
-        });
-    } else {
-        Webcam.set({
-            width: 550,
-            height: 450,
-            image_format: "jpeg",
-            jpeg_quality: 90,
-        });
-    }
+        }
+    });
 
 
     Webcam.attach("#my_camera");

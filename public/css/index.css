@@ -1,6 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#my_camera, #results {
+    width: 550px !important;
+    height: 400px !important;
+    margin-bottom: 10px;
+}
+
 .button-attend {
     border-radius: 20px;
     padding: 12px 16px;
@@ -14,8 +21,6 @@
     color: white;
     margin-button: 10px;
 }
-
-
 .button-checkin{
     background-color: #38BDF8;
 }
@@ -32,13 +37,13 @@
     height: 80vh !important;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     padding: 20px 0 !important;
 }
 .location{
     /* margin: 10% 10% 0 10%; */
-    /* padding: 1rem 1rem; */
+    padding: 0px !important;
     max-width: 500px;
     margin: 10px 0;
     font-size: 16px;
@@ -122,13 +127,16 @@ body[data-theme='dark'] {
 .button-camera:hover {
     background-color: #FBD341 !important;
 }
-@media (min-width: 768px) {
-    .camera{
-        margin-bottom: 0px;
+@media (max-width: 768px) {
+    #my_camera, #results {
+        width: 480px !important;
+        height: 320px !important;
+        margin-bottom: 1rem;
     }
 }
-@media (max-width: 768px) {
-    .camera{
-    margin-bottom: 1rem;
-}
+@media (max-width: 480px) {
+    #my_camera, #results {
+        width: 320px !important;
+        height: 240px !important;
+    }
 }
