@@ -53,11 +53,9 @@ class PresensiResource extends Resource
                     ->label('Waktu Check Out')
                     ->reactive() // Membuat field ini reactive
                     ->required(function (callable $get) {
-                        // Jika status adalah 'pulang', checkout wajib diisi
-                        return $get('status') === 'pulang';
+                        return $get('status') === 'pulang' || $get('image_pulang') === null;
                     })
                     ->afterStateUpdated(function ($state, callable $set) {
-                        // Jika checkout diisi, status otomatis jadi 'pulang'
                         if ($state) {
                             $set('status', 'pulang');
                         }
@@ -66,6 +64,25 @@ class PresensiResource extends Resource
                 Forms\Components\TextInput::make('location')
                     ->label('Lokasi')
                     ->required(),
+                Forms\Components\FileUpload::make('image_datang')
+                    ->required()
+                    ->label('Image Datang')
+                    ->disk('public')
+                    ->maxSize(1024),
+                Forms\Components\FileUpload::make('image_pulang')
+                    ->label('Image Pulang')
+                    ->disk('public')
+                    ->required(function (callable $get) {
+                        return $get('status') === 'pulang';
+                    })
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        if ($state) {
+                            $set('status', 'pulang');
+                        }
+                    })
+                    ->maxSize(1024),
+
+                // Kolom lainnya...
             ]);
     }
 
