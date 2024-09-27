@@ -31,18 +31,20 @@
                     <div class="flex flex-col items-center gap-0">
                         <div id="my_camera" class="camera"></div>
                         <div id="results" class="camera" style="display: none"></div>
-                        <td align="center" colspan="2">
-                            <input type="button" id="btnFrontBack" value="Back" />
-                            <input type="button" id="btnCapture" value="Capture" />
-                        </td>
+                        <div class="w-full flex justify-end justify-items-end pe-6">
+                            <input class=" p-4 my-2 rounded-md sm:block md:block lg:hidden z-30"
+                                style="margin-top: -50px" type="button" id="btnFrontBack" value="Back" />
+                        </div>
                         <x-filament::button class="font-bold button-snap button-camera" id="button-snap" type="button"
                             onClick="take_snapshot()">
                             <x-ionicon-camera-sharp class="w-6 h-6" />
                         </x-filament::button>
+
                         <x-filament::button class="font-bold button-reset mt-3 button-camera" type="button"
                             id="retake_button" onClick="retake_snapshot()" style="display:none;">
                             <b>Foto Ulang</b>
                         </x-filament::button>
+
                         <input type="hidden" name="image_datang" class="image-tag">
                         @error('image_datang')
                             <div class="text-sm text-red-500 py-3" style="color: red">
@@ -67,7 +69,10 @@
                     <div class="flex flex-col items-center gap-0">
                         <div id="my_camera" class="camera"></div>
                         <div id="results" class="camera" style="display: none"></div>
-
+                        <div class="w-full flex justify-end justify-items-end pe-6">
+                            <input class=" p-4 my-2 rounded-md sm:block md:block lg:hidden z-30"
+                                style="margin-top: -50px" type="button" id="btnFrontBack" value="Back" />
+                        </div>
                         <x-filament::button class="font-bold button-snap" id="button-snap" type="button"
                             onClick="take_snapshot()">
                             <x-ionicon-camera-sharp class="w-6 h-6" />
@@ -135,7 +140,6 @@
                 jpeg_quality: 90,
                 constraints: {
                     facingMode: mode
-
                 }
             });
         } else {
@@ -144,10 +148,6 @@
                 height: 350,
                 image_format: 'jpeg',
                 jpeg_quality: 90,
-                constraints: {
-                    facingMode: mode
-
-                }
             });
         }
         Webcam.attach('#my_camera');
