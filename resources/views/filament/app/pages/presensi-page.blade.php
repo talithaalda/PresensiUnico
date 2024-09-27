@@ -7,7 +7,7 @@
 
 <x-filament-panels::page>
     <div class="container-attend">
-        <div>
+        <div class="flex flex-col items-center gap-0">
             <h1 class="text-3xl font-bold hello">Hello, {{ ucfirst(Auth::user()->name) }}!</h1>
             @if ($user->checkedIn == true || $presensi?->status == 'hadir')
                 <div class="mb-4">
@@ -32,6 +32,8 @@
                     <div class="flex flex-col items-center gap-0">
                         <div id="my_camera" class="camera"></div>
                         <div id="results" class="camera" style="display: none"></div>
+                        <button onclick="toggleCamera()">Ganti Kamera</button>
+
                         <x-filament::button class="font-bold button-snap button-camera" id="button-snap" type="button"
                             onClick="take_snapshot()">
                             <x-ionicon-camera-sharp class="w-6 h-6" />
@@ -51,7 +53,9 @@
                         <input type="hidden" name="status" value="hadir">
                         <input type="hidden" name="location" id="location-input-checkin">
                         <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-
+                        <button type="submit" class="button-attend button-checkin mt-3">
+                            <b>Hadir</b>
+                        </button>
                     </div>
                 </form>
             @elseif ($user->checkedIn == true || $presensi?->status == 'hadir')
@@ -78,21 +82,14 @@
                             </div>
                         @enderror
                         <input type="hidden" name="location" id="location-input-checkout">
+                        <button type="submit" class="button-attend button-checkout mt-3">
+                            <b>Pulang</b>
+                        </button>
                     </div>
                 </form>
             @endif
         </div>
-        <div>
-            @if ($user->checkedIn == false || $presensi?->status == 'pulang')
-                <button type="submit" class="button-attend button-checkin mt-3">
-                    <b>Hadir</b>
-                </button>
-            @elseif ($user->checkedIn == true || $presensi?->status == 'hadir')
-                <button type="submit" class="button-attend button-checkout mt-3">
-                    <b>Pulang</b>
-                </button>
-            @endif
-        </div>
+
         @if (session('success'))
             <div
                 class="container-success justify-center fixed p-6 rounded-xl shadow-xl z-50 text-center
@@ -115,65 +112,83 @@
     </div>
 </x-filament-panels::page>
 <script>
+    let useRearCamera = true; // Variabel untuk melacak penggunaan kamera belakang atau depan
+
     function setCameraDimensions() {
+        let width, height, facingMode;
+
+        // Menentukan dimensi kamera berdasarkan ukuran layar
         if (window.innerWidth <= 480) {
-            Webcam.set({
-                width: 320, // Untuk layar kecil (mobile)
-                height: 240,
-                image_format: 'jpeg',
-                jpeg_quality: 90,
-                constraints: {
-                    video: {
-                        facingMode: {
-                            ideal: "environment"
-                        }
-                    }
-                }
-            });
+            width = 320; // Untuk layar kecil (mobile)
+            height = 240;
         } else if (window.innerWidth <= 768) {
-            Webcam.set({
-                width: 480, // Untuk layar tablet
-                height: 320,
-                image_format: 'jpeg',
-                jpeg_quality: 90
-            });
+            width = 480; // Untuk layar tablet
+            height = 320;
         } else {
-            Webcam.set({
-                width: 520, // Untuk layar besar (desktop)
-                height: 350,
-                image_format: 'jpeg',
-                jpeg_quality: 90
-            });
+            width = 520; // Untuk layar besar (desktop)
+            height = 350;
         }
+
+        // Tentukan apakah menggunakan kamera depan atau belakang
+        facingMode = useRearCamera ? "environment" : "user";
+
+        // Set pengaturan Webcam
+        Webcam.set({
+            width: width,
+            height: height,
+            image_format: 'jpeg',
+            jpeg_quality: 90,
+            constraints: {
+                video: {
+                    facingMode: {
+                        ideal: facingMode
+                    } // Pilih kamera depan atau belakang
+                }
+            }
+        });
+
+        // Pasang kamera pada elemen #my_camera
         Webcam.attach('#my_camera');
     }
 
+    // Fungsi untuk mengganti kamera
+    function toggleCamera() {
+        useRearCamera = !useRearCamera; // Toggle kamera depan/belakang
+        Webcam.reset(); // Reset webcam sebelum mengubah pengaturan
+        setCameraDimensions(); // Terapkan pengaturan baru
+    }
+
     // Panggil fungsi ini saat halaman dimuat
-    setCameraDimensions();
+    window.onload = setCameraDimensions;
 
     // Tambahkan event listener untuk merespons perubahan ukuran layar
-    window.addEventListener('resize', setCameraDimensions);
+    window.addEventListener('resize', function() {
+        Webcam.reset(); // Reset webcam sebelum mengubah pengaturan
+        setCameraDimensions();
+    });
 
+    // Fungsi untuk mengambil snapshot
     function take_snapshot() {
         console.log("Tombol snapshot ditekan");
         Webcam.snap(function(data_uri) {
             console.log("Snapshot diambil");
+            // Masukkan data URI ke dalam input tersembunyi dan tampilkan gambar snapshot
             $(".image-tag").val(data_uri);
-            document.getElementById("results").innerHTML =
-                '<img src="' + data_uri + '"/>';
+            document.getElementById("results").innerHTML = '<img src="' + data_uri + '"/>';
             document.getElementById("results").style.display = "block";
             document.getElementById("my_camera").style.display = "none";
             document.getElementById("button-snap").style.display = "none";
             document.getElementById("retake_button").style.display = "block";
-
         });
     }
 
+    // Fungsi untuk mengambil ulang snapshot
     function retake_snapshot() {
         console.log("Foto ulang ditekan");
+        // Kosongkan input dan tampilkan kamera kembali
         $(".image-tag").val(null);
-        document.getElementById("results").style.display = "none"; // Sembunyikan hasil snapshot
-        document.getElementById("my_camera").style.display = "block"; // Tampilkan kamera kembali
+        document.getElementById("results").style.display = "none";
+        document.getElementById("my_camera").style.display = "block";
         document.getElementById("retake_button").style.display = "none";
         document.getElementById("button-snap").style.display = "block";
     }

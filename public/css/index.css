@@ -34,12 +34,11 @@
     box-shadow: 0 0 30px 10px rgba(15, 218, 0, 0.5); /* Efek glow */
 }
 .container-attend {
-    height: 75vh !important;
+    height: 80vh !important;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 20px 0 !important;
 }
 .location{
     /* margin: 10% 10% 0 10%; */
