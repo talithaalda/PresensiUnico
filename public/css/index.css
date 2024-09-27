@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 #my_camera, #results {
-    width: 550px !important;
-    height: 400px !important;
+    width: 520px !important;
+    height: 350px !important;
     margin-bottom: 10px;
 }
 

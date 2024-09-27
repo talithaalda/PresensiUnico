@@ -139,8 +139,8 @@
             });
         } else {
             Webcam.set({
-                width: 550, // Untuk layar besar (desktop)
-                height: 400,
+                width: 520, // Untuk layar besar (desktop)
+                height: 350,
                 image_format: 'jpeg',
                 jpeg_quality: 90
             });
