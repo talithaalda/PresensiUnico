@@ -1,10 +1,9 @@
 <link rel="stylesheet" href="{{ asset('css/index.css') }}">
 <script src="{{ asset('js/index.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+<script src="/js/webcamjs/webcam.js"></script>
 <x-filament-panels::page>
     <div class="container-attend">
         <div class="flex flex-col items-center gap-0">
@@ -112,83 +111,91 @@
     </div>
 </x-filament-panels::page>
 <script>
-    let useRearCamera = true; // Variabel untuk melacak penggunaan kamera belakang atau depan
+    var cameras = []; // Buat array kosong untuk menyimpan perangkat video yang tersedia
 
-    function setCameraDimensions() {
-        let width, height, facingMode;
+    // Fungsi untuk mendapatkan dan menyimpan deviceId dari kamera yang ditemukan
+    function getCameras() {
+        navigator.mediaDevices.enumerateDevices() // Ambil perangkat yang tersedia
+            .then(function(devices) {
+                var i = 0;
+                devices.forEach(function(device) {
+                    if (device.kind === "videoinput") { // Filter hanya perangkat video
+                        cameras[i] = device.deviceId; // Simpan deviceId kamera dalam array
+                        i++;
+                    }
+                });
 
-        // Menentukan dimensi kamera berdasarkan ukuran layar
-        if (window.innerWidth <= 480) {
-            width = 320; // Untuk layar kecil (mobile)
-            height = 240;
-        } else if (window.innerWidth <= 768) {
-            width = 480; // Untuk layar tablet
-            height = 320;
-        } else {
-            width = 520; // Untuk layar besar (desktop)
-            height = 350;
-        }
-
-        // Tentukan apakah menggunakan kamera depan atau belakang
-        facingMode = useRearCamera ? "environment" : "user";
-
-        // Set pengaturan Webcam
-        Webcam.set({
-            width: width,
-            height: height,
-            image_format: 'jpeg',
-            jpeg_quality: 90,
-            constraints: {
-                video: {
-                    facingMode: {
-                        ideal: facingMode
-                    } // Pilih kamera depan atau belakang
+                // Periksa apakah ada kamera yang terdeteksi
+                if (cameras.length > 0) {
+                    initializeCamera(0); // Inisialisasi kamera pertama (0 untuk depan, 1 untuk belakang)
+                } else {
+                    console.error("Tidak ada kamera yang ditemukan.");
                 }
-            }
-        });
-
-        // Pasang kamera pada elemen #my_camera
-        Webcam.attach('#my_camera');
+            })
+            .catch(function(err) {
+                console.error("Error mendapatkan perangkat kamera: ", err);
+            });
     }
 
-    // Fungsi untuk mengganti kamera
+    // Fungsi untuk menginisialisasi kamera berdasarkan deviceId
+    function initializeCamera(cameraIndex) {
+        if (cameras[cameraIndex]) {
+            Webcam.set({
+                width: 500,
+                height: 350,
+                image_format: 'jpeg',
+                jpeg_quality: 90,
+                constraints: {
+                    video: {
+                        deviceId: {
+                            exact: cameras[cameraIndex]
+                        } // Set deviceId kamera yang dipilih
+                    }
+                }
+            });
+            Webcam.attach('#my_camera'); // Pasang kamera di elemen dengan id 'my_camera'
+        } else {
+            console.error("Kamera dengan index tersebut tidak ditemukan.");
+        }
+    }
+
+    // Fungsi untuk mengganti antara kamera depan dan belakang
     function toggleCamera() {
-        useRearCamera = !useRearCamera; // Toggle kamera depan/belakang
-        Webcam.reset(); // Reset webcam sebelum mengubah pengaturan
-        setCameraDimensions(); // Terapkan pengaturan baru
+        if (cameras.length >= 2) { // Pastikan ada lebih dari satu kamera
+            Webcam.reset(); // Reset webcam sebelum mengganti kamera
+            var currentCameraIndex = cameras.indexOf(Webcam.params.constraints.video.deviceId.exact);
+            var nextCameraIndex = currentCameraIndex === 0 ? 1 : 0; // Toggle antara kamera depan dan belakang
+            initializeCamera(nextCameraIndex); // Inisialisasi kamera baru
+        } else {
+            console.error("Hanya satu kamera yang terdeteksi.");
+        }
     }
 
-    // Panggil fungsi ini saat halaman dimuat
-    window.onload = setCameraDimensions;
+    // Panggil fungsi ini saat halaman dimuat untuk mendapatkan kamera
+    window.onload = function() {
+        getCameras(); // Dapatkan daftar kamera saat halaman dimuat
+    };
 
-    // Tambahkan event listener untuk merespons perubahan ukuran layar
-    window.addEventListener('resize', function() {
-        Webcam.reset(); // Reset webcam sebelum mengubah pengaturan
-        setCameraDimensions();
-    });
-
-    // Fungsi untuk mengambil snapshot
     function take_snapshot() {
         console.log("Tombol snapshot ditekan");
         Webcam.snap(function(data_uri) {
             console.log("Snapshot diambil");
-            // Masukkan data URI ke dalam input tersembunyi dan tampilkan gambar snapshot
             $(".image-tag").val(data_uri);
-            document.getElementById("results").innerHTML = '<img src="' + data_uri + '"/>';
+            document.getElementById("results").innerHTML =
+                '<img src="' + data_uri + '"/>';
             document.getElementById("results").style.display = "block";
             document.getElementById("my_camera").style.display = "none";
             document.getElementById("button-snap").style.display = "none";
             document.getElementById("retake_button").style.display = "block";
+
         });
     }
 
-    // Fungsi untuk mengambil ulang snapshot
     function retake_snapshot() {
         console.log("Foto ulang ditekan");
-        // Kosongkan input dan tampilkan kamera kembali
         $(".image-tag").val(null);
-        document.getElementById("results").style.display = "none";
-        document.getElementById("my_camera").style.display = "block";
+        document.getElementById("results").style.display = "none"; // Sembunyikan hasil snapshot
+        document.getElementById("my_camera").style.display = "block"; // Tampilkan kamera kembali
         document.getElementById("retake_button").style.display = "none";
         document.getElementById("button-snap").style.display = "block";
     }
