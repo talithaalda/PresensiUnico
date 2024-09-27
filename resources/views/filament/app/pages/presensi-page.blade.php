@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="{{ asset('css/index.css') }}">
 <script src="{{ asset('js/index.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="/js/webcamjs/webcam.js"></script>
 <x-filament-panels::page>
@@ -31,6 +31,10 @@
                     <div class="flex flex-col items-center gap-0">
                         <div id="my_camera" class="camera"></div>
                         <div id="results" class="camera" style="display: none"></div>
+                        <td align="center" colspan="2">
+                            <input type="button" id="btnFrontBack" value="Back" />
+                            <input type="button" id="btnCapture" value="Capture" />
+                        </td>
                         <x-filament::button class="font-bold button-snap button-camera" id="button-snap" type="button"
                             onClick="take_snapshot()">
                             <x-ionicon-camera-sharp class="w-6 h-6" />
@@ -63,6 +67,7 @@
                     <div class="flex flex-col items-center gap-0">
                         <div id="my_camera" class="camera"></div>
                         <div id="results" class="camera" style="display: none"></div>
+
                         <x-filament::button class="font-bold button-snap" id="button-snap" type="button"
                             onClick="take_snapshot()">
                             <x-ionicon-camera-sharp class="w-6 h-6" />
@@ -108,29 +113,44 @@
         <input type="hidden" id="location-api-key" value="{{ env('LOCATIONIQ_API_KEY') }}">
     </div>
 </x-filament-panels::page>
-<script>
+<script type="text/javascript">
     function setCameraDimensions() {
+        var mode = $('#btnFrontBack').val() == 'Back' ? 'environment' : 'user'; // Menentukan kamera
         if (window.innerWidth <= 480) {
-            Webcam.set('constraints', {
+            Webcam.set({
                 width: 320, // Untuk layar kecil (mobile)
                 height: 240,
                 image_format: 'jpeg',
                 jpeg_quality: 90,
-                facingMode: 'environment'
+                constraints: {
+                    video: {
+                        facingMode: mode // Atur mode kamera depan atau belakang
+                    }
+                }
             });
         } else if (window.innerWidth <= 768) {
             Webcam.set({
                 width: 480, // Untuk layar tablet
                 height: 320,
                 image_format: 'jpeg',
-                jpeg_quality: 90
+                jpeg_quality: 90,
+                constraints: {
+                    video: {
+                        facingMode: mode
+                    }
+                }
             });
         } else {
             Webcam.set({
                 width: 520, // Untuk layar besar (desktop)
                 height: 350,
                 image_format: 'jpeg',
-                jpeg_quality: 90
+                jpeg_quality: 90,
+                constraints: {
+                    video: {
+                        facingMode: mode
+                    }
+                }
             });
         }
         Webcam.attach('#my_camera');
@@ -142,6 +162,7 @@
     // Tambahkan event listener untuk merespons perubahan ukuran layar
     window.addEventListener('resize', setCameraDimensions);
 
+    // Fungsi untuk mengambil snapshot
     function take_snapshot() {
         console.log("Tombol snapshot ditekan");
         Webcam.snap(function(data_uri) {
@@ -153,10 +174,10 @@
             document.getElementById("my_camera").style.display = "none";
             document.getElementById("button-snap").style.display = "none";
             document.getElementById("retake_button").style.display = "block";
-
         });
     }
 
+    // Fungsi untuk mengambil ulang snapshot
     function retake_snapshot() {
         console.log("Foto ulang ditekan");
         $(".image-tag").val(null);
@@ -165,4 +186,11 @@
         document.getElementById("retake_button").style.display = "none";
         document.getElementById("button-snap").style.display = "block";
     }
+
+    // Toggle untuk beralih antara kamera depan dan belakang
+    $("#btnFrontBack").click(function() {
+        $('#btnFrontBack').val($('#btnFrontBack').val() == 'Back' ? 'Front' : 'Back');
+        Webcam.reset(); // Reset webcam sebelum mengganti mode kamera
+        setCameraDimensions(); // Terapkan dimensi kamera ulang sesuai pilihan mode
+    });
 </script>
