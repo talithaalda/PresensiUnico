@@ -2,8 +2,8 @@
 <script src="{{ asset('js/index.js') }}"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="/js/webcamjs/webcam.js"></script>
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+{{-- <script src="/js/webcamjs/webcam.js"></script> --}}
 <x-filament-panels::page>
     <div class="container-attend">
         <div class="flex flex-col items-center gap-0">
@@ -123,9 +123,8 @@
                 image_format: 'jpeg',
                 jpeg_quality: 90,
                 constraints: {
-                    video: {
-                        facingMode: mode // Atur mode kamera depan atau belakang
-                    }
+                    facingMode: mode // Atur mode kamera depan atau belakang
+
                 }
             });
         } else if (window.innerWidth <= 768) {
@@ -135,9 +134,8 @@
                 image_format: 'jpeg',
                 jpeg_quality: 90,
                 constraints: {
-                    video: {
-                        facingMode: mode
-                    }
+                    facingMode: mode
+
                 }
             });
         } else {
@@ -147,9 +145,8 @@
                 image_format: 'jpeg',
                 jpeg_quality: 90,
                 constraints: {
-                    video: {
-                        facingMode: mode
-                    }
+                    facingMode: mode
+
                 }
             });
         }
