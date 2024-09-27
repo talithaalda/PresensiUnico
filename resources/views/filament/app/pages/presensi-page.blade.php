@@ -44,6 +44,7 @@
                                 <br />
                             </div>
                         @enderror
+                        {{-- test --}}
                         <input type="hidden" name="status" value="hadir">
                         <input type="hidden" name="location" id="location-input-checkin">
                         <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
